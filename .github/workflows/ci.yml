@@ -1,0 +1,30 @@
+name: Build and Setup
+
+on:
+  push:
+    branches:
+      - ci-test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Add XMake PPA and install dependencies
+        run: |
+          sudo apt update
+          sudo add-apt-repository ppa:xmake-io/xmake -y
+          sudo apt update
+          sudo apt install -y xmake python3-pip
+          pip install kconfiglib scons requests tqdm psutil
+
+      - name: Source environment variables
+        run: source ./env.sh
+
+      - name: Build with xmake
+        run: |
+          cd models
+          xmake -vy
