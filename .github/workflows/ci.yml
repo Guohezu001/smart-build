@@ -1,23 +1,39 @@
+<<<<<<< HEAD
 name: CI Build
+=======
+name: Build and Setup
+>>>>>>> ci-test
 
 on:
   push:
     branches:
+<<<<<<< HEAD
       - main
+=======
+      - ci-test
+>>>>>>> ci-test
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+<<<<<<< HEAD
       - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Install Dependencies
+=======
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Add XMake PPA and install dependencies
+>>>>>>> ci-test
         run: |
           sudo apt update
           sudo add-apt-repository ppa:xmake-io/xmake -y
           sudo apt update
+<<<<<<< HEAD
           sudo apt install -y nim
           sudo apt install -y xmake python3-pip
           pip install --upgrade pip
@@ -41,3 +57,15 @@ jobs:
             models/rtthread.bin
             models/build/ext4.img
           retention-days: 7
+=======
+          sudo apt install -y xmake python3-pip
+          pip install kconfiglib scons requests tqdm psutil
+
+      - name: Source environment variables
+        run: source ./env.sh
+
+      - name: Build with xmake
+        run: |
+          cd models
+          xmake -vy
+>>>>>>> ci-test
