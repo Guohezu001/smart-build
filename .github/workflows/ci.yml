@@ -1,0 +1,105 @@
+name: CI Build
+
+on:
+  push:
+    branches:
+      - ci-test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: 检出代码
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Step 2: 更新包管理器并安装 xmake 和 Python 依赖
+      - name: Install Dependencies
+        run: |
+          # 更新包列表
+          sudo apt update
+
+          # 添加 xmake 的 PPA 仓库
+          sudo add-apt-repository ppa:xmake-io/xmake -y
+
+          # 再次更新包列表以包含 xmake PPA
+          sudo apt update
+
+          # 安装 xmake 和 python3-pip
+          sudo apt install -y xmake python3-pip
+
+          # 安装 Python 依赖
+          pip install --upgrade pip
+          pip install kconfiglib scons requests tqdm psutil
+
+      # Step 3: 设置环境变量并安装 unzip（相当于 source env.sh）
+      - name: Setup Environment
+        run: |
+          # 获取当前工作目录
+          script_dir="$(pwd)"
+
+          # 设置 xmake 配置文件路径
+          export XMAKE_RCFILES="${script_dir}/tools/scripts/xmake.lua"
+          export RT_XMAKE_LINK_TYPE="static"
+
+          echo "Configured XMAKE_RCFILES to $XMAKE_RCFILES"
+          echo "Configured RT_XMAKE_LINK_TYPE to $RT_XMAKE_LINK_TYPE"
+
+          # 检查是否安装了 unzip
+          if ! command -v unzip &> /dev/null; then
+              echo "Unzip 未安装。正在安装 unzip..."
+
+              # 根据可用的包管理器自动安装 unzip
+              if command -v apt-get &> /dev/null; then
+                  sudo apt-get update
+                  sudo apt-get install -y unzip
+              elif command -v yum &> /dev/null; then
+                  sudo yum install -y unzip
+              elif command -v dnf &> /dev/null; then
+                  sudo dnf install -y unzip
+              elif command -v pacman &> /dev/null; then
+                  sudo pacman -Sy --noconfirm unzip
+              else
+                  echo "未识别的包管理器，请手动安装 unzip。"
+                  exit 1
+              fi
+
+              echo "Unzip 已成功安装。"
+          else
+              echo "Unzip 已经安装。"
+          fi
+
+          echo "智能构建环境已准备就绪！"
+
+          # 添加自定义 xmake 仓库
+          custom_repo_path="${script_dir}/custom/repo" # 请根据实际路径替换
+          if [ -d "$custom_repo_path" ]; then
+              echo "添加自定义仓库: $custom_repo_path"
+              xmake repo --add custom_repo "$custom_repo_path"
+              xmake repo -u
+              echo "自定义仓库已添加并更新。"
+          else
+              echo "自定义仓库路径不存在: $custom_repo_path"
+              exit 1
+          fi
+
+          # 设置 PATH 和 RTT_EXEC_PATH
+          export PATH="$(python3 -m site --user-base)/bin:$HOME/.env/tools/scripts:$PATH"
+          export RTT_EXEC_PATH="/usr/bin"
+
+          echo "环境变量 PATH 和 RTT_EXEC_PATH 已设置。"
+
+      # Step 4: 运行 xmake 进行编译
+      - name: Build with xmake
+        run: |
+          cd models
+          xmake -vD
+
+      # Step 5: （可选）上传构建产物
+      - name: Upload Build Artifacts
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: models/build/* # 根据实际的构建产物路径调整
