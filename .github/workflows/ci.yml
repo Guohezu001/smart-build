@@ -73,7 +73,7 @@ jobs:
           echo "智能构建环境已准备就绪！"
 
           # 添加自定义 xmake 仓库
-          custom_repo_path="${script_dir}/custom/repo" # 请根据实际路径替换
+          custom_repo_path="${script_dir}/repo" 
           if [ -d "$custom_repo_path" ]; then
               echo "添加自定义仓库: $custom_repo_path"
               xmake repo --add custom_repo "$custom_repo_path"
