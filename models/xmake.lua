@@ -24,8 +24,6 @@ add_rules("mode.debug", "mode.release")
 
 add_requires("apps")
 
-add_requires("xmake::rt-thread", {optional = true})
-
 target("image")
     set_kind("phony")
 
