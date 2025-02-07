@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: 检出代码
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Step 2: 更新包管理器并安装 xmake 和 Python 依赖
       - name: Install Dependencies
         run: |
           sudo apt update
@@ -25,7 +23,6 @@ jobs:
           pip install --upgrade pip
           pip install kconfiglib scons requests tqdm psutil
 
-      # Step 3: 设置环境并运行 xmake 进行编译
       - name: Setup Environment and Build
         run: |
           # 使用 bash 作为 shell
@@ -36,7 +33,6 @@ jobs:
           '
         shell: bash
 
-      # Step 4: 给出ci产物下载链接
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -45,6 +41,3 @@ jobs:
             models/rtthread.bin
             models/build/ext4.img
           retention-days: 7
-
-      # Step 5: 在qemu中验证ci产物是否可以正常运行
-      
