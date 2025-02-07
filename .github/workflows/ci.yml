@@ -36,8 +36,8 @@ jobs:
           '
         shell: bash
 
-        # Step 4: 给出ci产物下载链接
-        - name: Upload Build Artifacts
+      # Step 4: 给出ci产物下载链接
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
@@ -46,5 +46,5 @@ jobs:
             models/build/ext4.img
           retention-days: 7
 
-        # Step 5: 验证ci产物在qemu中是否可以正常运行
-        
+      # Step 5: 在qemu中验证ci产物是否可以正常运行
+      
