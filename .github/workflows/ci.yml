@@ -38,6 +38,13 @@ jobs:
           ls -l models/rtthread.bin
           ls -l models/build/ext4.img
 
+      - name: List files in the models directory
+        run: |
+          ls -l models/
+          ls -l /
+          ls -l models/build/
+          pwd
+
       - name: Set file permissions
         run: |
           chmod +r models/rtthread.bin
