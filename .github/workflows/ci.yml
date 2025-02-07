@@ -33,11 +33,19 @@ jobs:
           '
         shell: bash
 
+      - name: Verify build artifacts existence
+        run: |
+          ls -l models/rtthread.bin
+          ls -l models/build/ext4.img
+
+      - name: Set file permissions
+        run: |
+          chmod +r models/rtthread.bin
+          chmod +r models/build/ext4.img
+
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
-          path: |
-            models/rtthread.bin
-            models/build/ext4.img
+          path: models/rtthread.bin,models/build/ext4.img
           retention-days: 7
