@@ -14,12 +14,6 @@ qemu-system-aarch64 -M virt,gic-version=2 -cpu cortex-a53 -m 128M -smp 4 -kernel
 # 等待 10 秒钟，以便 QEMU 启动并执行 /bin/hello
 sleep 10
 
-# 在 QEMU 虚拟机上执行 /bin/hello 任务
-echo "Running /bin/hello in QEMU..."
-telnet 127.0.0.1 4321 <<EOF
-/bin/hello
-EOF
-
 # 等待 10 秒后杀死 QEMU 进程
 sleep 10
 echo "Terminating QEMU..."
