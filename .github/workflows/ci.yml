@@ -50,5 +50,5 @@ jobs:
 
       - name: Run QEMU and Execute /bin/hello
         run: |
-          chmod +x ./run_qemu.sh
+          chmod +x ./github/workflows/run_qemu.sh
           ./run_qemu.sh
