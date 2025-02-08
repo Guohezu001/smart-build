@@ -37,7 +37,7 @@ jobs:
         run: |
           chmod +r ./models/rtthread.bin
           chmod +r ./models/build/ext4.img
-          ls -lh /models/build/
+          ls -lh ./models/build/
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -52,4 +52,3 @@ jobs:
         run: |
           chmod +x ./run_qemu.sh
           ./run_qemu.sh
-          
